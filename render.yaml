@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: wanderlust
+    env: node
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ATLASDB_URL
+      - key: SECRET
+      - key: CLOUD_NAME
+      - key: CLOUD_API_KEY
+      - key: CLOUD_API_SECRET
