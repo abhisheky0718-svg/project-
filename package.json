@@ -10,12 +10,13 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "cloudinary": "^2.10.0",
+    "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^6.0.0",
     "cookie-parser": "^1.4.7",

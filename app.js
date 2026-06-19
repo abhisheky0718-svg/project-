@@ -153,9 +153,10 @@ async function main() {
 
 main()
     .then(() => {
+        const port = process.env.PORT || 5000;
         console.log("connected to db");
-        app.listen(5000, () => {
-            console.log("server is listening at port 5000 ");
+        app.listen(port, () => {
+            console.log(`server is listening at port ${port}`);
         });
     }).catch((err) => {
         console.log("DB connection error:", err);
