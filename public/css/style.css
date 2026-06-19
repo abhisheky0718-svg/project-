@@ -10,6 +10,39 @@ body{
 .navbar{
     height:  5rem;
 }
+.navbar .navbar-nav {
+    align-items: center;
+}
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.search-inp {
+    width: 220px;
+    min-width: 180px;
+    border-radius: 50px;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.search-inp:focus {
+    outline: none;
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.15rem rgba(254, 66, 77, 0.15);
+}
+.search-btn {
+    background-color: #fe424d;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.5rem 1.25rem;
+    transition: background-color 0.2s ease;
+}
+.search-btn:hover {
+    background-color: #dd3b43;
+}
 .fa-compass{
    color: #fe424d;  
    font-size: 2rem;
@@ -51,7 +84,7 @@ margin-right: 5rem;
 
 }
  /* cards */
- .card{
+ .listing-card{
     border:none !important;
    margin-bottom: 2rem; 
 

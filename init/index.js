@@ -1,24 +1,43 @@
  const mongoose = require("mongoose");
  const initData = require("./data.js");
  const Listing = require("../models/listing.js");
+ const User = require("../models/user.js");
 
  const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
- 
- async function initDB(){
-   await Listing.deleteMany({});
-   
-      await Listing.insertMany(initData.data);
-   console.log("data was initialized");
- }
 
+  main()
+    .then(async () => {
+      console.log("connected to db");
+      await initDB();
+      console.log("seeding complete");
+      await mongoose.connection.close();
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+ 
  async function main(){
      await mongoose.connect(MONGO_URL);
-     await initDB();
+     
  }
+ 
+ const initDB = async() =>{
+  await Listing.deleteMany({});
+  
+  let user = await User.findOne({});
+  if (!user) {
+    let fakeUser = new User({ email: "test@example.com", username: "testuser" });
+    user = await User.register(fakeUser, "password123");
+  }
 
- main()
- .then(()=>{
-     console.log("connected to db");
- }).catch((err)=>{
-     console.log(err);
- });
+  initData.data = initData.data.map((obj)=>({
+...obj , owner: user._id , 
+  }))
+  await Listing.insertMany(initData.data);
+  console.log("data was intialized")
+ };
+
+// initialization is triggered after DB connection above
+ 
