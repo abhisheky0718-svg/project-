@@ -71,7 +71,7 @@ try {
     process.exit(1);
 }
 
-const sessionOptions = {gitstore,
+const sessionOptions = {store,
     secret,
     resave: false,
     saveUninitialized: false,
@@ -182,8 +182,3 @@ async function resolveSrvIfNeeded() {
         process.exit(1);
     }
 })();
-
-
-
-
-    
