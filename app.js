@@ -10,7 +10,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
-const MongoStore = require("connect-mongo").default;
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -39,30 +39,11 @@ if (!dbUrl) {
 
 let store;
 try {
-    if (MongoStore && typeof MongoStore.create === "function") {
-        store = MongoStore.create({
-            mongoUrl: dbUrl,
-            crypto: { secret },
-            touchAfter: 24 * 3600,
-        });
-    } else if (MongoStore && MongoStore.default && typeof MongoStore.default.create === "function") {
-        // handle transpiled/default export shapes
-        store = MongoStore.default.create({
-            mongoUrl: dbUrl,
-            crypto: { secret },
-            touchAfter: 24 * 3600,
-        });
-    } else if (typeof MongoStore === "function") {
-        // older connect-mongo versions export a function that accepts the session
-        const MongoStoreFactory = MongoStore(session);
-        store = new MongoStoreFactory({
-            url: dbUrl,
-            crypto: { secret },
-            touchAfter: 24 * 3600,
-        });
-    } else {
-        throw new Error("Unsupported connect-mongo export shape");
-    }
+    store = MongoStore.create({
+        mongoUrl: dbUrl,
+        crypto: { secret },
+        touchAfter: 24 * 3600,
+    });
     store.on("error", (err) => {
         console.error("Mongo session store error:", err);
     });
