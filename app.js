@@ -37,17 +37,39 @@ if (!dbUrl) {
     process.exit(1);
 }
 
-const store = MongoStore.create({
-    mongoUrl: dbUrl,
-    crypto: {
-        secret,
-    },
-    touchAfter: 24 * 3600,
-});
-
-store.on("error", (err) => {
-    console.error("Mongo session store error:", err);
-});
+let store;
+try {
+    if (MongoStore && typeof MongoStore.create === "function") {
+        store = MongoStore.create({
+            mongoUrl: dbUrl,
+            crypto: { secret },
+            touchAfter: 24 * 3600,
+        });
+    } else if (MongoStore && MongoStore.default && typeof MongoStore.default.create === "function") {
+        // handle transpiled/default export shapes
+        store = MongoStore.default.create({
+            mongoUrl: dbUrl,
+            crypto: { secret },
+            touchAfter: 24 * 3600,
+        });
+    } else if (typeof MongoStore === "function") {
+        // older connect-mongo versions export a function that accepts the session
+        const MongoStoreFactory = MongoStore(session);
+        store = new MongoStoreFactory({
+            url: dbUrl,
+            crypto: { secret },
+            touchAfter: 24 * 3600,
+        });
+    } else {
+        throw new Error("Unsupported connect-mongo export shape");
+    }
+    store.on("error", (err) => {
+        console.error("Mongo session store error:", err);
+    });
+} catch (err) {
+    console.error("Failed to create Mongo session store:", err);
+    process.exit(1);
+}
 
 const sessionOptions = {
     store,
