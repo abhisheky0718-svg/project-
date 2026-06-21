@@ -86,23 +86,6 @@ app.use((req , res ,next)=>{
     next();
 });
 
-// app.get("/demouser", async(req,res, next)=>{
-//     try {
-//         let fakeUser = new User ({
-//             email :"abhiyadav@gmail.com",
-//             username :"Abhishek"
-//         });
-//         let registeredUser = await User.register(fakeUser , "helloworld");
-//         res.send(registeredUser);
-//     } catch(err) {
-//         next(err); // passes the error to your custom error handler
-//     }
-// });
-
- 
-
-
-
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/" , userRouter);
