@@ -37,6 +37,8 @@ if (!dbUrl) {
     process.exit(1);
 }
 
+const MongoStore = require("connect-mongo");
+
 let store;
 try {
     store = MongoStore.create({
@@ -44,6 +46,7 @@ try {
         crypto: { secret },
         touchAfter: 24 * 3600,
     });
+
     store.on("error", (err) => {
         console.error("Mongo session store error:", err);
     });
@@ -51,18 +54,6 @@ try {
     console.error("Failed to create Mongo session store:", err);
     process.exit(1);
 }
-
-const sessionOptions = {store,
-    secret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-    },
-};
-
 
 
 // app.get("/" ,( req , res)=>{
