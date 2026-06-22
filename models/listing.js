@@ -1,40 +1,56 @@
+/**
+ * Listing Model
+ * Represents a lodging listing (e.g., room, apartment, villa) with properties 
+ * like title, description, image, price, location, reviews, and owner.
+ */
+
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
-// removed incorrect joi import; use native JavaScript String for schema types
 
 const listingSchema = new Schema({
-    title : {
+    // Title/name of the listing
+    title: {
         type: String,
-        required : true, 
+        required: true, 
     },
-
-    description : String,
-    image : {
+    // Detailed description
+    description: String,
+    // Uploaded image details (URL and filename from Cloudinary)
+    image: {
         url: String,
-        filename : String,
+        filename: String,
     },
-    price : Number,
+    // Cost per night
+    price: Number,
+    // City/region location
     location: String,
-country : String,
-reviews:[
-    {
-    type: Schema.Types.ObjectId,
-    ref:"Review",
+    // Country location
+    country: String,
+    // One-to-Many Relationship: Reference array of Review ObjectIds
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Review",
+        },
+    ],
+    // One-to-One Relationship: Reference to the User owner who created the listing
+    owner: {
+        type: Schema.Types.ObjectId, 
+        ref: "User",
     },
-],
-
-owner:{
-    type : Schema.Types.ObjectId, 
-    ref:"User",
-},
 });
 
-listingSchema.post("findOneAndDelete" , async(listing)=>{
-    if(listing){
- await Review.deleteMany({_id : {$in : listing.reviews}});
- }   
-})
+/**
+ * Mongoose Query Post Hook (findOneAndDelete)
+ * Automatically runs after findByIdAndDelete or findOneAndDelete queries.
+ * Cleans up and deletes all Review documents referenced by this Listing.
+ */
+listingSchema.post("findOneAndDelete", async (listing) => {
+    if (listing) {
+        await Review.deleteMany({ _id: { $in: listing.reviews } });
+    }   
+});
 
-const Listing = mongoose.model("Listing" , listingSchema);
+const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing; 
