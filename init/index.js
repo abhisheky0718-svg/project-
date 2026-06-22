@@ -1,9 +1,21 @@
- const mongoose = require("mongoose");
- const initData = require("./data.js");
- const Listing = require("../models/listing.js");
- const User = require("../models/user.js");
+const dns = require('dns');
+dns.setDefaultResultOrder && dns.setDefaultResultOrder('ipv4first');
+try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (err) {
+    console.warn("Failed to set DNS servers:", err.message);
+}
 
- const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+}
+
+const mongoose = require("mongoose");
+const initData = require("./data.js");
+const Listing = require("../models/listing.js");
+const User = require("../models/user.js");
+
+const MONGO_URL = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
   main()
     .then(async () => {
