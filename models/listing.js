@@ -27,6 +27,12 @@ const listingSchema = new Schema({
     location: String,
     // Country location
     country: String,
+    // Category for filtering listings (e.g. Trending, Room, Pools)
+    category: {
+        type: String,
+        enum: ["Trending", "Room", "Iconic Cities", "Mountain", "Castels", "Pools", "Camping", "Farms"],
+        default: "Room",
+    },
     // One-to-Many Relationship: Reference array of Review ObjectIds
     reviews: [
         {

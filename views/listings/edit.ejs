@@ -73,9 +73,19 @@ name="listing[description]" class="form-control" required><%= listing.descriptio
    <div class="valid-feedback"> Please enter valid location </div>
    </div>
 
+   <div class="mb-3">
+     <label for="category" class="form-label"> Category </label>
+     <select name="listing[category]" id="category" class="form-select" required>
+       <% const categories = ["Trending", "Room", "Iconic Cities", "Mountain", "Castels", "Pools", "Camping", "Farms"]; %>
+       <% categories.forEach(cat => { %>
+         <option value="<%= cat %>" <%= (listing.category === cat) ? 'selected' : '' %>><%= cat %></option>
+       <% }); %>
+     </select>
+     <div class="invalid-feedback"> Please select a category </div>
+   </div>
+
 
 <button class="btn btn-dark edit-btn mt-3"> Edit </button>
     </form>
     </div>
    </div>
-  

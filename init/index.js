@@ -44,9 +44,12 @@ const MONGO_URL = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/dream_la
     user = await User.register(fakeUser, "password123");
   }
 
-  initData.data = initData.data.map((obj)=>({
-...obj , owner: user._id , 
-  }))
+  const categories = ["Trending", "Room", "Iconic Cities", "Mountain", "Castels", "Pools", "Camping", "Farms"];
+  initData.data = initData.data.map((obj, index)=>({
+    ...obj,
+    owner: user._id,
+    category: categories[index % categories.length]
+  }));
   await Listing.insertMany(initData.data);
   console.log("data was intialized")
  };

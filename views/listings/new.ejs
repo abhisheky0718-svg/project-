@@ -62,13 +62,27 @@ required />
   </div>
 
 
-  <div>
+  <div class="mb-3">
     <label for="location" class="form-label"> Location </label>
     <input name="listing[location]" placeholder="enter location" type="text"  class="form-control"
     required/>
+    <div class="invalid-feedback"> Please enter a valid location </div>
   </div>
 
-
+  <div class="mb-3">
+    <label for="category" class="form-label"> Category </label>
+    <select name="listing[category]" id="category" class="form-select" required>
+      <option value="Room" selected>Room</option>
+      <option value="Trending">Trending</option>
+      <option value="Iconic Cities">Iconic Cities</option>
+      <option value="Mountain">Mountain</option>
+      <option value="Castels">Castels</option>
+      <option value="Pools">Pools</option>
+      <option value="Camping">Camping</option>
+      <option value="Farms">Farms</option>
+    </select>
+    <div class="invalid-feedback"> Please select a category </div>
+  </div>
 
 <button class="btn btn-dark add-btn mt-3"> Add </button>
 

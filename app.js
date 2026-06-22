@@ -24,6 +24,7 @@ try {
 // 3. Module Imports
 const express = require("express");
 const app = express();
+app.set("trust proxy", 1); // Trust reverse proxy headers (e.g. Render, Heroku) for HTTPS redirect URL generation
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
@@ -98,16 +99,47 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate())); // Uses passport-local for username/password authentication
 
+// Google OAuth 2.0 Strategy Configuration
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID || "MOCK_CLIENT_ID",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "MOCK_CLIENT_SECRET",
+    callbackURL: "/auth/google/callback",
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+        const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        if (!email) {
+            return done(new Error("No email associated with this Google Account."));
+        }
+        
+        let user = await User.findOne({ email: email.toLowerCase().trim() });
+        if (!user) {
+            const baseUsername = profile.displayName.replace(/\s+/g, "").toLowerCase();
+            const randomSuffix = Math.floor(100 + Math.random() * 900);
+            const username = baseUsername + randomSuffix;
+            
+            user = new User({ email: email.toLowerCase().trim(), username });
+            await User.register(user, Math.random().toString(36).substring(2)); // Register with random local password
+        }
+        return done(null, user);
+    } catch (err) {
+        return done(err);
+    }
+  }
+));
+
 // Configure serialization (saving user details to session) and deserialization
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser()); 
 
 // 10. Local Variables Middleware
-// Injects success, error flash messages, and the current logged-in user to EJS templates.
+// Injects success, error flash messages, current logged-in user, and activeCategory query to EJS templates.
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.activeCategory = req.query.category || "";
     next();
 });
 

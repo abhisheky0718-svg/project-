@@ -14,10 +14,23 @@ const ExpressError = require("../utils/ExpressError.js");
  * GET /listings
  */
 module.exports.index = async (req, res, next) => {
-    // Fetch all listings from the database
-    const allListings = await Listing.find({});
-    // Render the index template with listings data passed to EJS
-    res.render("listings/index", { allListings });
+    let filter = {};
+    if (req.query.category) {
+        filter.category = req.query.category;
+    } else if (req.query.search) {
+        const searchRegex = new RegExp(req.query.search, "i");
+        filter = {
+            $or: [
+                { location: searchRegex },
+                { country: searchRegex },
+                { title: searchRegex }
+            ]
+        };
+    }
+    // Fetch filtered listings from the database
+    const allListings = await Listing.find(filter);
+    // Render the index template with listings data and active category state
+    res.render("listings/index", { allListings, activeCategory: req.query.category || "" });
 };
 
 /**

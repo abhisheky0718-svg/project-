@@ -52,8 +52,10 @@ module.exports.isOwner = async (req, res, next) => {
  * Compiles a validation middleware using Joi schemas to validate request body.
  */
 const validateSchema = (schema) => (req, res, next) => {
+    console.log("validateSchema - req.body:", req.body);
     const { error } = schema.validate(req.body);
     if (error) {
+        console.log("validateSchema - Joi Error details:", error.details);
         const errMsg = error.details.map((el) => el.message).join(',');
         throw new ExpressError(400, errMsg);
     } else {
