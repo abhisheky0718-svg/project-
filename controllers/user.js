@@ -16,7 +16,7 @@ module.exports.signup = async(req, res)=>{
     if(err){
       return next(err);
     }
- req.flash("success" , "Welcome to wonderlust");
+ req.flash("success" , "Welcome to Dream Land");
  res.redirect("/listings");
  }) 
 }catch(err){

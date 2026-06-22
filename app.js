@@ -1,5 +1,5 @@
 /**
- * Wanderlust Web Application - Main Entrypoint (app.js)
+ * Dream Land Web Application - Main Entrypoint (app.js)
  * This file configures the Express application, sets up middleware, 
  * configures session storage with MongoDB, handles Passport authentication, 
  * mounts routes, and initializes the database connection.
